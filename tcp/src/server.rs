@@ -4,11 +4,11 @@ use std::io;
 use std::net::{SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 
 /// Represent STP server, that can accept incoming connections.
-pub struct StpServer {
+pub struct TcpServer {
     tcp: TcpListener,
 }
 
-impl StpServer {
+impl TcpServer {
     /// Binds server to specefied socket.
     pub fn bind<Addrs>(addrs: Addrs) -> BindResult<Self>
     where
@@ -19,9 +19,9 @@ impl StpServer {
     }
 
     /// Blocking iterator for incoming connections.
-    pub fn incoming(&self) -> impl Iterator<Item = ConnectResult<StpConnection>> + '_ {
+    pub fn incoming(&self) -> impl Iterator<Item = ConnectResult<TcpConnection>> + '_ {
         self.tcp.incoming().map(|s| match s {
-            Ok(s) => Ok(StpConnection::new(s)),
+            Ok(s) => Ok(TcpConnection::new(s)),
             Err(e) => Err(ConnectError::Io(e)),
         })
     }
@@ -30,11 +30,11 @@ impl StpServer {
 /// Represent connection from client.
 ///
 /// Allows to receive requests and send responses.
-pub struct StpConnection {
+pub struct TcpConnection {
     stream: TcpStream,
 }
 
-impl StpConnection {
+impl TcpConnection {
     pub fn new(stream: TcpStream) -> Self {
         Self { stream }
     }

@@ -38,12 +38,18 @@ impl SmartSocket {
     pub fn switch(&mut self, state: bool) {
         self.state = state;
 
-        if self.state {
+        if self.is_on() {
             self.power = (rand::random::<f64>() * 100.0).round() / 100.0
         } else {
             self.power = 0.0
         }
     }
+
+    pub fn is_on(&self) -> bool {
+        self.state
+    }
+
+    pub fn get_status(&self) {}
 }
 
 impl From<SmartSocket> for Device {
