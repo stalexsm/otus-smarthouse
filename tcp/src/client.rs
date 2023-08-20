@@ -1,5 +1,3 @@
-// https://github.com/dlyubanevich/2022-04-otus-rust-lyubanevich/blob/main/Homework%20%237/src/network/tcp/client.rs
-
 use super::protocol;
 use crate::errors::{ConnectResult, RequestResult};
 
