@@ -75,15 +75,23 @@ impl Display for SmartSocket {
 pub struct SmartThermometer {
     id: Uuid,
     name: String,
-    temperature: f64,
+    temperature: f32,
 }
 impl SmartThermometer {
-    pub fn new(name: String, temperature: f64) -> Self {
+    pub fn new(name: String) -> Self {
         Self {
             id: Uuid::new_v4(),
             name,
-            temperature,
+            temperature: 0.0,
         }
+    }
+
+    pub fn set_temperature(&mut self, val: f32) {
+        self.temperature = val;
+    }
+
+    pub fn get_temperature(&mut self) -> f32 {
+        self.temperature
     }
 }
 
@@ -115,7 +123,8 @@ mod tests {
 
     #[test]
     fn get_temperature_in_thermo() {
-        let thermo = SmartThermometer::new(String::from("My Thermometer"), 23.4);
+        let mut thermo = SmartThermometer::new(String::from("My Thermometer"));
+        thermo.set_temperature(23.4);
 
         assert_eq!(thermo.name, "My Thermometer");
     }

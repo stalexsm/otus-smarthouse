@@ -5,7 +5,8 @@ use smarthouse::rooms::Room;
 fn main() {
     let socket1 = SmartSocket::new(String::from("Socket 1"));
     let mut socket2 = SmartSocket::new(String::from("Socket 2"));
-    let thermo = SmartThermometer::new(String::from("Thermometer 1"), 18.8);
+    let mut thermo = SmartThermometer::new(String::from("Thermometer 1"));
+    thermo.set_temperature(12.2);
 
     // Инициализация дома
     let mut living_room = Room::new(String::from("Living Room"));
