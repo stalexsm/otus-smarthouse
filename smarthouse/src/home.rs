@@ -168,9 +168,7 @@ mod tests {
     #[test]
     fn smarthome_create_report_borrowing() {
         let socket = SmartSocket::new(String::from("My Socket"));
-        let mut thermo = SmartThermometer::new(String::from("My Thermometer"));
-        thermo.set_temperature(28.3);
-
+        let thermo = SmartThermometer::new(String::from("My Thermometer"));
         let mut room = Room::new(String::from("My Room"));
 
         room.add_device(Device::Socket(socket.clone()));

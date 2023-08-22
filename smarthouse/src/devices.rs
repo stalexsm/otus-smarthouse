@@ -1,5 +1,6 @@
-use rand;
+use socket_lib::{Command, Response};
 use std::fmt::Display;
+use std::time::Instant;
 use uuid::Uuid;
 
 #[derive(Clone)]
@@ -21,8 +22,7 @@ impl Device {
 pub struct SmartSocket {
     id: Uuid,
     name: String,
-    state: bool,
-    power: f64,
+    enabled: bool,
 }
 
 impl SmartSocket {
@@ -30,26 +30,55 @@ impl SmartSocket {
         Self {
             id: Uuid::new_v4(),
             name,
-            state: false,
-            power: 0.0,
+            enabled: false,
         }
     }
 
-    pub fn switch(&mut self, state: bool) {
-        self.state = state;
-
-        if self.is_on() {
-            self.power = (rand::random::<f64>() * 100.0).round() / 100.0
+    pub fn process_command(&mut self, cmd: Command) -> Response {
+        match cmd {
+            Command::TurnOn => {
+                self.enabled = true;
+                Response::Ok
+            }
+            Command::TurnOff => {
+                self.enabled = false;
+                Response::Ok
+            }
+            Command::IsEnabled => {
+                if self.enabled {
+                    Response::Enabled
+                } else {
+                    Response::Disabled
+                }
+            }
+            Command::GetPower => {
+                if self.enabled {
+                    Response::Power(220.5)
+                } else {
+                    Response::Power(0.0)
+                }
+            }
+            Command::Unknown => {
+                println!("Unknown command received");
+                Response::Unknown
+            }
+        }
+    }
+    fn get_power(&self) -> Response {
+        if self.enabled {
+            Response::Power(220.5)
         } else {
-            self.power = 0.0
+            Response::Power(0.0)
         }
     }
 
-    pub fn is_on(&self) -> bool {
-        self.state
+    fn is_enabled(&self) -> Response {
+        if self.enabled {
+            Response::Enabled
+        } else {
+            Response::Disabled
+        }
     }
-
-    pub fn get_status(&self) {}
 }
 
 impl From<SmartSocket> for Device {
@@ -62,11 +91,11 @@ impl Display for SmartSocket {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "id: {}\nSmartSocket: {}, State: {}, Power: {}",
+            "id: {}\nSmartSocket: {}, isEnabled: {}, Power: {}",
             &self.id,
             &self.name,
-            if self.state { "On" } else { "Off" },
-            &self.power
+            &self.is_enabled(),
+            &self.get_power(),
         )
     }
 }
@@ -75,23 +104,20 @@ impl Display for SmartSocket {
 pub struct SmartThermometer {
     id: Uuid,
     name: String,
-    temperature: f32,
+    started: Instant,
 }
 impl SmartThermometer {
     pub fn new(name: String) -> Self {
         Self {
             id: Uuid::new_v4(),
             name,
-            temperature: 0.0,
+            started: Instant::now(),
         }
     }
 
-    pub fn set_temperature(&mut self, val: f32) {
-        self.temperature = val;
-    }
-
-    pub fn get_temperature(&mut self) -> f32 {
-        self.temperature
+    pub fn get_temperature(&self) -> f32 {
+        let delay = Instant::now() - self.started;
+        20.0 + (delay.as_secs_f32() / 2.0).sin()
     }
 }
 
@@ -106,7 +132,9 @@ impl Display for SmartThermometer {
         write!(
             f,
             "id: {}\nSmartThermometer: {}, temperature: {}°C",
-            &self.id, &self.name, &self.temperature
+            &self.id,
+            &self.name,
+            &self.get_temperature()
         )
     }
 }
@@ -123,17 +151,15 @@ mod tests {
 
     #[test]
     fn get_temperature_in_thermo() {
-        let mut thermo = SmartThermometer::new(String::from("My Thermometer"));
-        thermo.set_temperature(23.4);
-
+        let thermo = SmartThermometer::new(String::from("My Thermometer"));
         assert_eq!(thermo.name, "My Thermometer");
     }
 
     #[test]
     fn socket_state_on() {
         let mut socket = SmartSocket::new(String::from("My Socket"));
-        socket.switch(true);
+        socket.process_command(Command::TurnOn);
 
-        assert!(socket.state);
+        assert!(socket.enabled);
     }
 }

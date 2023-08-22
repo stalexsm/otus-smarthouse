@@ -1,12 +1,12 @@
 use smarthouse::devices::{SmartSocket, SmartThermometer};
 use smarthouse::home::{BorrowingDeviceInfoProvider, OwningDeviceInfoProvider, SmartHome};
 use smarthouse::rooms::Room;
+use socket_lib::Command;
 
 fn main() {
     let socket1 = SmartSocket::new(String::from("Socket 1"));
     let mut socket2 = SmartSocket::new(String::from("Socket 2"));
-    let mut thermo = SmartThermometer::new(String::from("Thermometer 1"));
-    thermo.set_temperature(12.2);
+    let thermo = SmartThermometer::new(String::from("Thermometer 1"));
 
     // Инициализация дома
     let mut living_room = Room::new(String::from("Living Room"));
@@ -15,7 +15,7 @@ fn main() {
 
     let mut kitchen = Room::new(String::from("Kitchen"));
 
-    socket2.switch(true);
+    socket2.process_command(Command::TurnOn);
 
     kitchen.add_device(socket2.clone().into());
     kitchen.add_device(thermo.clone().into());
