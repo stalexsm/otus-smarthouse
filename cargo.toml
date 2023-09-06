@@ -1,7 +1,12 @@
 [workspace]
+resolver = "2"
 
 members = [
     "smarthouse",
     "socket_lib",
     "thermo_lib",
+    "socket_bin_async",
+    "socket_lib_async",
+    "thermo_bin_async",
+    "thermo_lib_async",
 ]
