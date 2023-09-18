@@ -9,4 +9,5 @@ members = [
     "socket_lib_async",
     "thermo_bin_async",
     "thermo_lib_async",
+    "patterns",
 ]
