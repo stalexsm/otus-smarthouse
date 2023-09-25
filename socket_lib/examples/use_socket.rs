@@ -1,9 +1,15 @@
 use std::io;
 
-use socket_lib::{Command, SmartSocketClient};
+use socket_lib::{Command, SmartSocketClient, SmartSocketError};
 
 fn main() {
-    let mut client = SmartSocketClient::new("127.0.0.1:7890").unwrap();
+    let mut client = match SmartSocketClient::new("127.0.0.1:43212") {
+        Ok(client) => client,
+        Err(SmartSocketError::Io(e)) => {
+            println!("{}", e);
+            return;
+        }
+    };
 
     loop {
         show_menu();

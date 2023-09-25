@@ -11,7 +11,7 @@ fn main() {
     let mut args = std::env::args();
     args.next().unwrap();
 
-    let server_address = args.next().unwrap_or_else(|| "127.0.0.1:7890".into());
+    let server_address = args.next().unwrap_or_else(|| "127.0.0.1:43212".into());
 
     let listener = TcpListener::bind(server_address).expect("can't bind tcp listener");
     let smart_socket = Arc::new(RwLock::new(SmartSocket::new(String::from(

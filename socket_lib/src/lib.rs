@@ -1,7 +1,6 @@
 use std::{
-    error::Error,
     fmt,
-    io::{Read, Write},
+    io::{Error, Read, Write},
     net::{TcpStream, ToSocketAddrs},
 };
 
@@ -90,17 +89,23 @@ impl fmt::Display for Response {
     }
 }
 
+#[derive(thiserror::Error, Debug)]
+pub enum SmartSocketError {
+    #[error("An error occurred when accessing the socket: {0}")]
+    Io(#[from] Error),
+}
+
 pub struct SmartSocketClient {
     stream: TcpStream,
 }
 
 impl SmartSocketClient {
-    pub fn new(server_address: impl ToSocketAddrs) -> Result<Self, Box<dyn Error>> {
+    pub fn new(server_address: impl ToSocketAddrs) -> Result<Self, SmartSocketError> {
         let stream = TcpStream::connect(server_address)?;
         Ok(Self { stream })
     }
 
-    pub fn run_command(&mut self, command: Command) -> Result<Response, Box<dyn Error>> {
+    pub fn run_command(&mut self, command: Command) -> Result<Response, SmartSocketError> {
         self.stream.write_all(&[command.into()])?;
         let mut buffer = [0u8; 5];
         self.stream.read_exact(&mut buffer)?;
