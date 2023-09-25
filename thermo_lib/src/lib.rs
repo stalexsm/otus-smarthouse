@@ -1,5 +1,5 @@
 use std::{
-    error::Error,
+    io,
     net::{ToSocketAddrs, UdpSocket},
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -9,13 +9,21 @@ use std::{
     time::Duration,
 };
 
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum SmartThermoError {
+    #[error("An error occurred when accessing the thermo: {0}")]
+    Io(#[from] io::Error),
+}
+
 pub struct SmartThermo {
     temperature: Arc<Temperature>,
     finished: Arc<AtomicBool>,
 }
 
 impl SmartThermo {
-    pub fn new(addrs: impl ToSocketAddrs) -> Result<Self, Box<dyn Error>> {
+    pub fn new(addrs: impl ToSocketAddrs) -> Result<Self, SmartThermoError> {
         let socket = UdpSocket::bind(addrs)?;
         socket.set_read_timeout(Some(Duration::from_secs(1)))?;
 
