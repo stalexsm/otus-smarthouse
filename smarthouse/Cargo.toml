@@ -7,7 +7,9 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-uuid = { version = "1.4.1", features = ["v4"] }
+uuid = { version = "1.4.1", features = ["v4", "serde"] }
+serde = { version = "1.0.189", features = ["derive"] }
+chrono = { version = "0.4.31", features = ["serde"] }
 
 thermo_lib = { path = "../thermo_lib"}
 socket_lib = { path = "../socket_lib"}

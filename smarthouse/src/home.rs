@@ -1,10 +1,11 @@
 use crate::devices::{Device, SmartSocket, SmartThermometer};
 use crate::rooms::Room;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Display;
 use uuid::Uuid;
 
-#[derive(Clone)]
+#[derive(Clone, Deserialize, Serialize)]
 pub struct SmartHome {
     pub id: Uuid,
     pub name: String,

@@ -1,9 +1,10 @@
 use super::devices::Device;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt::Display;
 use uuid::Uuid;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Room {
     pub id: Uuid,
     pub name: String,

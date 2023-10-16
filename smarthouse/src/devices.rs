@@ -1,9 +1,12 @@
+use chrono::{DateTime, Utc};
+
+use serde::{Deserialize, Serialize};
 use socket_lib::{Command, Response};
 use std::fmt::Display;
-use std::time::Instant;
+
 use uuid::Uuid;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum Device {
     Socket(SmartSocket),
     Thermometer(SmartThermometer),
@@ -18,7 +21,7 @@ impl Device {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct SmartSocket {
     id: Uuid,
     name: String,
@@ -100,24 +103,24 @@ impl Display for SmartSocket {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct SmartThermometer {
     id: Uuid,
     name: String,
-    started: Instant,
+    started: DateTime<Utc>,
 }
 impl SmartThermometer {
     pub fn new(name: String) -> Self {
         Self {
             id: Uuid::new_v4(),
             name,
-            started: Instant::now(),
+            started: Utc::now(),
         }
     }
 
     pub fn get_temperature(&self) -> f32 {
-        let delay = Instant::now() - self.started;
-        20.0 + (delay.as_secs_f32() / 2.0).sin()
+        let delay = Utc::now() - self.started;
+        20.0 + (delay.num_seconds() as f32 / 2.0).sin()
     }
 }
 
