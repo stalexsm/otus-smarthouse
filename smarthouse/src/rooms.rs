@@ -27,6 +27,11 @@ impl Room {
         }
     }
 
+    pub fn get_device(&mut self, id: &Uuid) -> Option<Device> {
+        // Get device
+        self.devices.get(id).cloned()
+    }
+
     pub fn delete_device(&mut self, device: Device) {
         // Delete device
         if let Some(id) = device.get_id() {

@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::fmt::Display;
 use uuid::Uuid;
 
-#[derive(Clone, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize, Default)]
 pub struct SmartHome {
     pub id: Uuid,
     pub name: String,
@@ -35,6 +35,10 @@ impl SmartHome {
     pub fn add_room(&mut self, room: Room) {
         // Добавление комнаты
         self.rooms.insert(room.id, room);
+    }
+
+    pub fn get_room(&self, id: &Uuid) -> Option<Room> {
+        self.rooms.get(id).cloned()
     }
 
     pub fn delete_room(&mut self, room: Room) {

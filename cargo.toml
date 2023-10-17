@@ -3,6 +3,7 @@ resolver = "2"
 
 members = [
     "smarthouse",
+    "smarthouse_web",
     "socket_lib",
     "thermo_lib",
     "socket_bin_async",
