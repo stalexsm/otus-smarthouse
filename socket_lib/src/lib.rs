@@ -4,6 +4,7 @@ use std::{
     net::{TcpStream, ToSocketAddrs},
 };
 
+#[derive(Debug, Clone)]
 pub enum Command {
     TurnOff,
     TurnOn,
@@ -95,6 +96,7 @@ pub enum SmartSocketError {
     Io(#[from] Error),
 }
 
+#[derive(Debug)]
 pub struct SmartSocketClient {
     stream: TcpStream,
 }

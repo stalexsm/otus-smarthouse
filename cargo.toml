@@ -5,6 +5,7 @@ members = [
     "smarthouse",
     "smarthouse_web",
     "socket_lib",
+    "socket_gui",
     "thermo_lib",
     "socket_bin_async",
     "socket_lib_async",
