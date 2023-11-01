@@ -12,4 +12,5 @@ members = [
     "thermo_bin_async",
     "thermo_lib_async",
     "patterns",
+    "py_socket",
 ]
